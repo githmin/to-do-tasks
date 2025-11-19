@@ -6,7 +6,7 @@ Containerized full-stack application implementing a To-Do list. Demonstrating Cl
 
 ## Tech Stack
 
-- Frontend: React 18, TypeScript, Tailwind CSS, Vite, Axios, Vitest (Testing)
+- Frontend: React 18, TypeScript, MUI, Vite, Axios, Vitest (Testing)
 
 - Backend: Java 21, Spring Boot 3.4, Spring Data JPA, Flyway, Lombok
 
