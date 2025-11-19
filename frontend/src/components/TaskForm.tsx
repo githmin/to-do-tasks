@@ -14,10 +14,12 @@ import AxiosConfig from "../config/AxiosConfig";
 import { useData } from "../contextProviders.tsx/DataContext";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../contextProviders.tsx/SnackbarContext";
+import type z from "zod";
 
 const TaskForm = () => {
   const { triggerRefresh, taskId, setEditTaskId } = useData();
   const { showMessage } = useSnackbar();
+  type TaskFormValues = z.infer<typeof taskSchema>;
 
   const [isLoadingData, setIsLoadingData] = useState(false);
 
@@ -26,13 +28,13 @@ const TaskForm = () => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
     defaultValues: taskDefaultValues,
     mode: "onChange",
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: TaskFormValues) => {
     if (taskId) {
       await AxiosConfig.put(`/tasks/update`, data)
         .then(() => {

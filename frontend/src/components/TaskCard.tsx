@@ -12,8 +12,9 @@ import DoneOutlineOutlinedIcon from "@mui/icons-material/DoneOutlineOutlined";
 import AxiosConfig from "../config/AxiosConfig";
 import { useData } from "../contextProviders.tsx/DataContext";
 import { useSnackbar } from "../contextProviders.tsx/SnackbarContext";
+import type { Task } from "../interfaces/TaskType";
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task }: { task: Task }) => {
   const { triggerRefresh, setEditTaskId } = useData();
   const { showMessage } = useSnackbar();
 

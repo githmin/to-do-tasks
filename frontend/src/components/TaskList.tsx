@@ -3,10 +3,11 @@ import TaskCard from "./TaskCard";
 import { useEffect, useState } from "react";
 import AxiosConfig from "../config/AxiosConfig";
 import { useData } from "../contextProviders.tsx/DataContext";
+import type { Task } from "../interfaces/TaskType";
 
 const TaskList = () => {
   const { refreshKey } = useData();
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
