@@ -18,11 +18,11 @@ Containerized full-stack application implementing a To-Do list. Demonstrating Cl
 
 - Prerequisites for local development: Node.js 20+, JDK 21+ , Docker & Docker-Compose
 
-## Deployment Instructions
+### Deployment Instructions
 
 Step 1. Clone the repo
 
-Clone the repo using the bash command if you have git installed
+Clone the repo using the bash command if you have git installed and navitigate to the project directory
 
 ```bash
 git clone https://github.com/githmin/to-do-tasks.git
@@ -30,7 +30,7 @@ git clone https://github.com/githmin/to-do-tasks.git
 
 or
 
-Select Code -> Download ZIP on github.com/githmin/to-do-tasks
+Select Code -> Download ZIP on github.com/githmin/to-do-tasks, unzip the file and navigate to the project directory
 
 ![Download](./misc/dload-empl.gif)
 
