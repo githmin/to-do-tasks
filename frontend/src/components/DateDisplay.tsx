@@ -3,26 +3,8 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const DateDisplay = () => {
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: 3,
-        display: "flex",
-        alignItems: "center",
-        gap: 2,
-        bgcolor: "background.default",
-      }}
-    >
-      <Box
-        sx={{
-          p: 1,
-          bgcolor: "#f1f5f9",
-          borderRadius: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+    <Paper elevation={0} sx={styleProps.paper}>
+      <Box sx={styleProps.box}>
         <CalendarTodayIcon />
       </Box>
 
@@ -48,6 +30,24 @@ const DateDisplay = () => {
       </Stack>
     </Paper>
   );
+};
+
+const styleProps = {
+  paper: {
+    p: 3,
+    display: "flex",
+    alignItems: "center",
+    gap: 2,
+    bgcolor: "background.default",
+  },
+  box: {
+    p: 1,
+    bgcolor: "#f1f5f9",
+    borderRadius: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 };
 
 export default DateDisplay;

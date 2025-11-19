@@ -33,17 +33,7 @@ const TaskCard = ({ task }) => {
   };
 
   return (
-    <Card
-      sx={{
-        width: "100%",
-        // maxWidth: 500,
-        minHeight: 190,
-        transition: "all 0.2s ease-in-out",
-        "&:hover": {
-          borderColor: "text.secondary",
-        },
-      }}
-    >
+    <Card sx={taskCardStyles.card}>
       <CardContent sx={{ p: 2, pb: 1.5 }}>
         <Stack spacing={2}>
           <Stack spacing={0.5}>
@@ -55,20 +45,14 @@ const TaskCard = ({ task }) => {
               <Typography
                 variant="subtitle1"
                 fontWeight={600}
-                sx={{ lineHeight: 1.5, letterSpacing: "-0.025em" }}
+                sx={taskCardStyles.subtitleText}
               >
                 {task.title} &nbsp;
                 <Chip
                   label={"Pending"}
                   size="small"
                   variant="outlined"
-                  sx={{
-                    height: 22,
-                    fontSize: "0.7rem",
-                    fontWeight: 500,
-                    borderColor: "divider",
-                    color: "text.secondary",
-                  }}
+                  sx={taskCardStyles.pendingChip}
                 />
               </Typography>
 
@@ -88,52 +72,71 @@ const TaskCard = ({ task }) => {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{
-            lineHeight: 1.6,
-            // mb: 2,
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
+          sx={taskCardStyles.descriptionText}
         >
           {task.description}
         </Typography>
       </CardContent>
 
-      <CardActions
-        sx={{
-          p: 3,
-          pt: 0,
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
+      <CardActions sx={taskCardStyles.cardActions}>
         <Button
           variant="contained"
-          sx={{
-            height: 35,
-            fontSize: "0.875rem",
-          }}
+          sx={taskCardStyles.button}
           onClick={() => handleEdit()}
         >
-          <EditOutlinedIcon sx={{ mr: 0.5, fontSize: "1rem" }} />
+          <EditOutlinedIcon sx={taskCardStyles.Icon} />
           Edit
         </Button>
         <Button
           variant="contained"
-          sx={{
-            height: 35,
-            fontSize: "0.875rem",
-          }}
+          sx={taskCardStyles.button}
           onClick={() => handleComplete()}
         >
-          <DoneOutlineOutlinedIcon sx={{ mr: 0.5, fontSize: "1rem" }} />
+          <DoneOutlineOutlinedIcon sx={taskCardStyles.Icon} />
           Mark as Complete
         </Button>
       </CardActions>
     </Card>
   );
+};
+
+const taskCardStyles = {
+  card: {
+    width: "100%",
+    // maxWidth: 500,
+    minHeight: 190,
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      borderColor: "text.secondary",
+    },
+  },
+  pendingChip: {
+    height: 22,
+    fontSize: "0.7rem",
+    fontWeight: 500,
+    borderColor: "divider",
+    color: "text.secondary",
+  },
+  descriptionText: {
+    lineHeight: 1.6,
+    // mb: 2,
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
+  cardActions: {
+    p: 3,
+    pt: 0,
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  button: {
+    height: 35,
+    fontSize: "0.875rem",
+  },
+  Icon: { mr: 0.5, fontSize: "1rem" },
+  subtitleText: { lineHeight: 1.5, letterSpacing: "-0.025em" },
 };
 
 export default TaskCard;

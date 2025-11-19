@@ -28,31 +28,7 @@ const TaskList = () => {
   }, [refreshKey]);
 
   return (
-    <Card
-      sx={{
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        maxHeight: "88vh",
-        overflowY: "auto",
-        "&::-webkit-scrollbar": {
-          width: "8px",
-        },
-        "&::-webkit-scrollbar-track": {
-          bgcolor: "background.default",
-          borderRadius: "10px",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          bgcolor: "text.secondary",
-          borderRadius: "10px",
-          border: "2px solid background.default",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          bgcolor: "text.primary",
-        },
-      }}
-    >
+    <Card sx={cardStyleProps}>
       {loading ? (
         <Card sx={{ display: "flex", justifyContent: "center", p: 4 }}>
           <CircularProgress />
@@ -64,6 +40,30 @@ const TaskList = () => {
       )}
     </Card>
   );
+};
+
+const cardStyleProps = {
+  p: 2,
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+  maxHeight: "88vh",
+  overflowY: "auto",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-track": {
+    bgcolor: "background.default",
+    borderRadius: "10px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    bgcolor: "text.secondary",
+    borderRadius: "10px",
+    border: "2px solid background.default",
+  },
+  "&::-webkit-scrollbar-thumb:hover": {
+    bgcolor: "text.primary",
+  },
 };
 
 export default TaskList;
