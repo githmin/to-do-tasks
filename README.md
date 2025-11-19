@@ -30,7 +30,7 @@ git clone https://github.com/githmin/to-do-tasks.git
 
 or
 
-Select Code -> Download ZIP on github.com/githmin/to-do-tasks, unzip the file and navigate to the project directory
+Select Code -> Download ZIP on https://github.com/githmin/to-do-tasks, unzip the file and navigate to the project directory
 
 ![Download](./misc/dload-empl.gif)
 
