@@ -2,6 +2,8 @@
 
 Containerized full-stack application implementing a To-Do list. Demonstrating Clean Architecture, SOLID principles, and a Test Driven methodology for enterprise environments.
 
+![Screenshot](./misc/Screenshot.png)
+
 ## Tech Stack
 
 - Frontend: React 18, TypeScript, Tailwind CSS, Vite, Axios, Vitest (Testing)
