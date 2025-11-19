@@ -5,6 +5,9 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
+ENV CI=true
+RUN npm run test:run
+
 RUN npm run build
 
 FROM nginx:1.27-alpine
