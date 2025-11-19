@@ -29,6 +29,8 @@ or
 
 Select Code -> Download ZIP on github.com/githmin/to-do-tasks
 
+![Download](./misc/dload-empl.gif)
+
 Step 2. Setup Environment Variables
 
 An example structure is given as ".env.example" in the repo. You may use the example as is, just rename it to ".env" in the exact same location or execute the below command on the root directory of the project
