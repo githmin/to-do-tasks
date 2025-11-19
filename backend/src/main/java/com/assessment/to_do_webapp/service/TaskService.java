@@ -2,6 +2,7 @@ package com.assessment.to_do_webapp.service;
 
 import com.assessment.to_do_webapp.dto.CreateTaskRequestDTO;
 import com.assessment.to_do_webapp.dto.TaskResponseDTO;
+import com.assessment.to_do_webapp.dto.UpdateTaskDTO;
 import com.assessment.to_do_webapp.model.Task;
 import com.assessment.to_do_webapp.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,19 @@ public class TaskService {
         t.setIsCompleted(true);
         Task updateTask = taskRepository.save(t);
         return convertToDto(updateTask);
+    }
+
+    public TaskResponseDTO updateTask(UpdateTaskDTO task){
+        Task t = taskRepository.findById(task.id()).orElseThrow(()->new RuntimeException("Task Not Found"));
+        t.setTitle(task.title());
+        t.setDescription(task.description());
+        Task updatedTask = taskRepository.save(t);
+        return convertToDto(updatedTask);
+    }
+
+    public TaskResponseDTO findTask(UUID id){
+        Task t = taskRepository.findById(id).orElseThrow(()-> new RuntimeException("Task Not Found"));
+        return convertToDto(t);
     }
 
     private TaskResponseDTO convertToDto(Task t){

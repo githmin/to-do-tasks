@@ -2,6 +2,7 @@ package com.assessment.to_do_webapp.controllers;
 
 import com.assessment.to_do_webapp.dto.CreateTaskRequestDTO;
 import com.assessment.to_do_webapp.dto.TaskResponseDTO;
+import com.assessment.to_do_webapp.dto.UpdateTaskDTO;
 import com.assessment.to_do_webapp.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,12 @@ import java.util.UUID;
 public class TaskController {
     private final TaskService taskService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> getTask(@PathVariable UUID id){
+        TaskResponseDTO t = taskService.findTask(id);
+        return ResponseEntity.ok(t);
+    }
+
     @GetMapping
     public ResponseEntity<List<TaskResponseDTO>> getRecentTasks(){
         List<TaskResponseDTO> t = taskService.getMostRecent5IncompletedTasks();
@@ -29,7 +36,13 @@ public class TaskController {
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/update")
+    public ResponseEntity<TaskResponseDTO> complete(@RequestBody UpdateTaskDTO task){
+        TaskResponseDTO t = taskService.updateTask(task);
+        return ResponseEntity.ok(t);
+    }
+
+    @PatchMapping("/{id}/complete")
     public ResponseEntity<TaskResponseDTO> complete(@PathVariable UUID id){
         TaskResponseDTO t = taskService.markAsComplete(id);
         return ResponseEntity.ok(t);
