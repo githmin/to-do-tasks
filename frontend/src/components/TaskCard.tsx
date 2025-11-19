@@ -68,7 +68,7 @@ const TaskCard = ({ task }) => {
         </Stack>
       </CardContent>
 
-      <CardContent sx={{ pt: 0, pb: 2 }}>
+      <CardContent sx={{ pt: 0, pb: 2, minHeight: 85 }}>
         <Typography
           variant="body2"
           color="text.secondary"
