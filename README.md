@@ -14,8 +14,11 @@ Containerized full-stack application implementing a To-Do list. Demonstrating Cl
 
 ## Getting Started
 
-Prerequisites for deployment only: Docker & Docker Compose (Desktop or Engine)
-Prerequisites for local development: Node.js 20+, JDK 21+ , Docker & Docker-Compose
+- Prerequisites for deployment only: Docker & Docker Compose (Desktop or Engine)
+
+- Prerequisites for local development: Node.js 20+, JDK 21+ , Docker & Docker-Compose
+
+## Deployment Instructions
 
 Step 1. Clone the repo
 
