@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App.tsx";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "./Theme.tsx";
+import { DataProvider } from "./contextProviders.tsx/DataProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>
-    <StrictMode>
-      <CssBaseline />
-      <App />
-    </StrictMode>
+    <DataProvider>
+      <StrictMode>
+        <CssBaseline />
+        <App />
+      </StrictMode>
+    </DataProvider>
   </ThemeProvider>
 );

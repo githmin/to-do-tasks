@@ -1,49 +1,171 @@
-import { useState } from "react";
-import { Stack, TextField, Typography, Button, Box } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Stack,
+  TextField,
+  Typography,
+  Button,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+
+import { taskSchema, taskDefaultValues } from "../utils/TaskFormValidations";
+import AxiosConfig from "../config/AxiosConfig";
+import { useData } from "../contextProviders.tsx/DataContext";
+import { useEffect, useState } from "react";
 
 const TaskForm = () => {
-  const [task, setTask] = useState({
-    title: "",
-    description: "",
+  const { triggerRefresh, taskId, setEditTaskId } = useData();
+
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(taskSchema),
+    defaultValues: taskDefaultValues,
+    mode: "onChange",
   });
 
+  const onSubmit = async (data) => {
+    if (taskId) {
+      await AxiosConfig.put(`/tasks/update`, data).then(() => {
+        setEditTaskId(null);
+        reset(taskDefaultValues);
+        triggerRefresh();
+      });
+    } else {
+      await AxiosConfig.post("/tasks", data).then(() => {
+        reset();
+        triggerRefresh();
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (taskId) {
+      // eslint-disable-next-line
+      setIsLoadingData(true);
+
+      AxiosConfig.get(`/tasks/${taskId}`)
+        .then((response) => {
+          const { id, title, description } = response.data;
+          reset({ id, title, description });
+        })
+        .catch((error) => {
+          console.error("Failed to fetch task", error);
+        })
+        .finally(() => {
+          setIsLoadingData(false);
+        });
+    } else {
+      setIsLoadingData(false);
+      reset(taskDefaultValues);
+    }
+  }, [taskId, reset]);
+
+  const cancelEdit = () => {
+    setEditTaskId(null);
+    reset(taskDefaultValues);
+  };
+
   return (
-    <Box component="form" sx={{ height: "100%" }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      sx={{ height: "100%" }}
+      noValidate
+    >
       <Stack spacing={2} sx={{ p: 3, height: "100%" }}>
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          sx={{ mb: 1, color: "text.primary" }}
-        >
-          Create New Task
-        </Typography>
+        {isLoadingData ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexGrow: 1,
+              minHeight: "200px",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+              {taskId ? "Edit Task" : "Create New Task"}
+            </Typography>
 
-        <TextField
-          name="title"
-          placeholder="Task title (e.g., 'Daily Standup Meeting')"
-          value={task.title}
-          fullWidth
-          required
-        />
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Task Title"
+                  placeholder="e.g., 'Daily Standup Meeting'"
+                  fullWidth
+                  error={!!errors.title}
+                  helperText={errors.title?.message}
+                  disabled={isSubmitting}
+                />
+              )}
+            />
 
-        <TextField
-          name="description"
-          placeholder="Add a detailed description or notes..."
-          multiline
-          rows={5}
-          value={task.description}
-          fullWidth
-        />
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Description"
+                  multiline
+                  rows={5}
+                  fullWidth
+                  error={!!errors.description}
+                  helperText={errors.description?.message}
+                  disabled={isSubmitting}
+                />
+              )}
+            />
+          </>
+        )}
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!task.title}
-          fullWidth
-        >
-          Create Task +
-        </Button>
+        {taskId && !isLoadingData && (
+          <Button
+            type="button"
+            variant="outlined"
+            onClick={() => cancelEdit()}
+            disabled={isSubmitting}
+            fullWidth
+          >
+            Cancel Edit
+          </Button>
+        )}
+
+        {!isLoadingData && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            fullWidth
+          >
+            {isSubmitting ? (
+              <>
+                <Typography sx={{ mr: 1 }}>
+                  {taskId ? "Updating..." : "Adding new task..."}
+                </Typography>
+                <CircularProgress size={24} color="inherit" />
+              </>
+            ) : taskId ? (
+              "Save Changes"
+            ) : (
+              "Create Task +"
+            )}
+          </Button>
+        )}
       </Stack>
     </Box>
   );

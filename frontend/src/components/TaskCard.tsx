@@ -9,8 +9,26 @@ import {
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DoneOutlineOutlinedIcon from "@mui/icons-material/DoneOutlineOutlined";
+import AxiosConfig from "../config/AxiosConfig";
+import { useData } from "../contextProviders.tsx/DataContext";
 
 const TaskCard = ({ task }) => {
+  const { triggerRefresh, setEditTaskId } = useData();
+
+  const handleComplete = async () => {
+    await AxiosConfig.patch(`/tasks/${task.id}/complete`)
+      .then(() => {
+        triggerRefresh();
+      })
+      .catch((error) => {
+        console.error("Error marking task as complete:", error);
+      });
+  };
+
+  const handleEdit = () => {
+    setEditTaskId(task.id);
+  };
+
   return (
     <Card
       sx={{
@@ -94,6 +112,7 @@ const TaskCard = ({ task }) => {
             height: 35,
             fontSize: "0.875rem",
           }}
+          onClick={() => handleEdit()}
         >
           <EditOutlinedIcon sx={{ mr: 0.5, fontSize: "1rem" }} />
           Edit
@@ -104,6 +123,7 @@ const TaskCard = ({ task }) => {
             height: 35,
             fontSize: "0.875rem",
           }}
+          onClick={() => handleComplete()}
         >
           <DoneOutlineOutlinedIcon sx={{ mr: 0.5, fontSize: "1rem" }} />
           Mark as Complete
