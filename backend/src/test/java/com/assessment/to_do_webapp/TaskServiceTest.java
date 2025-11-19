@@ -1,20 +1,27 @@
 package com.assessment.to_do_webapp;
 
+import com.assessment.to_do_webapp.dto.CreateTaskRequestDTO;
 import com.assessment.to_do_webapp.dto.TaskResponseDTO;
 import com.assessment.to_do_webapp.model.Task;
 import com.assessment.to_do_webapp.repository.TaskRepository;
 import com.assessment.to_do_webapp.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-        import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
@@ -26,26 +33,70 @@ class TaskServiceTest {
     private TaskService taskService;
 
     @Test
-    void shouldFindTaskById() {
-        UUID id = UUID.randomUUID();
-        Task task = new Task();
-        task.setId(id);
-        task.setTitle("Test Task");
+    void createTaskShouldMapFieldsAndPersist() {
+        CreateTaskRequestDTO request = new CreateTaskRequestDTO("Task 1", "Urgent");
 
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> {
+            Task t = invocation.getArgument(0);
+            t.setId(UUID.randomUUID());
+            t.setCreatedAt(LocalDateTime.now());
+            return t;
+        });
 
-        TaskResponseDTO result = taskService.findTask(id);
+        TaskResponseDTO response = taskService.createTask(request);
 
-        assertNotNull(result);
-        assertEquals("Test Task", result.title());
-        verify(taskRepository).findById(id);
+        assertThat(response.title()).isEqualTo("Task 1");
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        Task capturedTask = taskCaptor.getValue();
+
+        assertThat(capturedTask.getTitle()).isEqualTo("Task 1");
+        assertThat(capturedTask.getDescription()).isEqualTo("Urgent");
+        assertThat(capturedTask.getIsCompleted()).isFalse();
     }
 
     @Test
-    void shouldThrowExceptionWhenTaskNotFound() {
+    void markAsCompleteShouldUpdateStatusWhenTaskExists() {
+        UUID id = UUID.randomUUID();
+        Task existingTask = new Task();
+        existingTask.setId(id);
+        existingTask.setIsCompleted(false);
+
+        when(taskRepository.findById(id)).thenReturn(Optional.of(existingTask));
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArgument(0));
+
+        TaskResponseDTO response = taskService.markAsComplete(id);
+
+        assertThat(response.isCompleted()).isTrue();
+
+        verify(taskRepository).save(existingTask);
+        assertThat(existingTask.getIsCompleted()).isTrue();
+    }
+
+    @Test
+    void markAsCompleteShouldThrowExceptionWhenTaskNotFound() {
         UUID id = UUID.randomUUID();
         when(taskRepository.findById(id)).thenReturn(Optional.empty());
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                taskService.markAsComplete(id)
+        );
+        assertThat(exception.getMessage()).isEqualTo("Task Not Found");
+        verify(taskRepository, never()).save(any());
+    }
 
-        assertThrows(RuntimeException.class, () -> taskService.findTask(id));
+    @Test
+    void getMostRecent5IncompletedTasks_ShouldTransformEntitiesToDTOs() {
+        Task t1 = new Task(); t1.setId(UUID.randomUUID()); t1.setTitle("A");
+        Task t2 = new Task(); t2.setId(UUID.randomUUID()); t2.setTitle("B");
+
+        when(taskRepository.findFirst5ByIsCompletedFalseOrderByCreatedAtDesc())
+                .thenReturn(List.of(t1, t2));
+
+        List<TaskResponseDTO> results = taskService.getMostRecent5IncompletedTasks();
+
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).title()).isEqualTo("A");
+        assertThat(results.get(1).title()).isEqualTo("B");
     }
 }
