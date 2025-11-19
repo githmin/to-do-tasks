@@ -8,7 +8,7 @@ export const taskSchema = z.object({
     .max(50, "Title cannot exceed 50 characters"),
   description: z
     .string()
-    .max(500, "Description cannot exceed 500 characters")
+    .max(200, "Description cannot exceed 500 characters")
     .optional(),
 });
 
