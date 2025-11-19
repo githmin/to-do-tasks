@@ -86,7 +86,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void getMostRecent5IncompletedTasks_ShouldTransformEntitiesToDTOs() {
+    void getMostRecent5IncompletedTasksShouldTransformEntitiesToDTOs() {
         Task t1 = new Task(); t1.setId(UUID.randomUUID()); t1.setTitle("A");
         Task t2 = new Task(); t2.setId(UUID.randomUUID()); t2.setTitle("B");
 
