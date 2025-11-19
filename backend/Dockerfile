@@ -7,7 +7,7 @@ WORKDIR /workspace/app
 COPY pom.xml pom.xml
 COPY src src
 
-RUN mvn -e -X -DskipTests package
+RUN mvn package
 
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
