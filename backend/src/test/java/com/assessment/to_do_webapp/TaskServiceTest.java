@@ -2,6 +2,7 @@ package com.assessment.to_do_webapp;
 
 import com.assessment.to_do_webapp.dto.CreateTaskRequestDTO;
 import com.assessment.to_do_webapp.dto.TaskResponseDTO;
+import com.assessment.to_do_webapp.dto.UpdateTaskDTO;
 import com.assessment.to_do_webapp.model.Task;
 import com.assessment.to_do_webapp.repository.TaskRepository;
 import com.assessment.to_do_webapp.service.TaskService;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -98,5 +99,51 @@ class TaskServiceTest {
         assertThat(results).hasSize(2);
         assertThat(results.get(0).title()).isEqualTo("A");
         assertThat(results.get(1).title()).isEqualTo("B");
+    }
+
+    @Test
+    void updateTaskSuccessShouldReturnUpdatedDto() {
+        UUID taskId = UUID.randomUUID();
+        LocalDateTime createdDate = LocalDateTime.now();
+
+        Task existingTask = new Task();
+        existingTask.setId(taskId);
+        existingTask.setTitle("Old Title");
+        existingTask.setDescription("Old Description");
+        existingTask.setIsCompleted(false);
+        existingTask.setCreatedAt(createdDate);
+
+        UpdateTaskDTO updateDto = new UpdateTaskDTO(taskId, "Updated", "Updated");
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
+
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TaskResponseDTO result = taskService.updateTask(updateDto);
+        assertNotNull(result);
+        assertEquals("Updated", result.title());
+        assertEquals("Updated", result.description());
+        assertEquals(taskId, result.id());
+        assertEquals(createdDate, result.createdAt());
+
+        verify(taskRepository).findById(taskId);
+        verify(taskRepository).save(existingTask);
+    }
+
+    @Test
+    void updateTaskNotFoundShouldThrowException() {
+        UUID nonExistentId = UUID.randomUUID();
+        UpdateTaskDTO updateDto = new UpdateTaskDTO(nonExistentId, "Title", "Desc");
+
+        when(taskRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            taskService.updateTask(updateDto);
+        });
+
+        assertEquals("Task Not Found", exception.getMessage());
+
+        verify(taskRepository).findById(nonExistentId);
+        verify(taskRepository, never()).save(any());
     }
 }
