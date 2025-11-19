@@ -13,9 +13,11 @@ import { taskSchema, taskDefaultValues } from "../utils/TaskFormValidations";
 import AxiosConfig from "../config/AxiosConfig";
 import { useData } from "../contextProviders.tsx/DataContext";
 import { useEffect, useState } from "react";
+import { useSnackbar } from "../contextProviders.tsx/SnackbarContext";
 
 const TaskForm = () => {
   const { triggerRefresh, taskId, setEditTaskId } = useData();
+  const { showMessage } = useSnackbar();
 
   const [isLoadingData, setIsLoadingData] = useState(false);
 
@@ -32,16 +34,26 @@ const TaskForm = () => {
 
   const onSubmit = async (data) => {
     if (taskId) {
-      await AxiosConfig.put(`/tasks/update`, data).then(() => {
-        setEditTaskId(null);
-        reset(taskDefaultValues);
-        triggerRefresh();
-      });
+      await AxiosConfig.put(`/tasks/update`, data)
+        .then(() => {
+          setEditTaskId(null);
+          reset(taskDefaultValues);
+          showMessage("Task updated successfully");
+          triggerRefresh();
+        })
+        .catch(() => {
+          showMessage("Failed to update task");
+        });
     } else {
-      await AxiosConfig.post("/tasks", data).then(() => {
-        reset();
-        triggerRefresh();
-      });
+      await AxiosConfig.post("/tasks", data)
+        .then(() => {
+          reset();
+          showMessage("New task added successfully");
+          triggerRefresh();
+        })
+        .catch(() => {
+          showMessage("Failed to add new task");
+        });
     }
   };
 

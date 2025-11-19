@@ -11,17 +11,20 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DoneOutlineOutlinedIcon from "@mui/icons-material/DoneOutlineOutlined";
 import AxiosConfig from "../config/AxiosConfig";
 import { useData } from "../contextProviders.tsx/DataContext";
+import { useSnackbar } from "../contextProviders.tsx/SnackbarContext";
 
 const TaskCard = ({ task }) => {
   const { triggerRefresh, setEditTaskId } = useData();
+  const { showMessage } = useSnackbar();
 
   const handleComplete = async () => {
     await AxiosConfig.patch(`/tasks/${task.id}/complete`)
       .then(() => {
         triggerRefresh();
+        showMessage(task.title + " marked as complete");
       })
-      .catch((error) => {
-        console.error("Error marking task as complete:", error);
+      .catch(() => {
+        showMessage("Error marking task as complete");
       });
   };
 
